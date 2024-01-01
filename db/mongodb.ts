@@ -1,6 +1,6 @@
 import { MongoClient, ServerApiVersion } from 'mongodb';
 
-const uri: string = "mongodb+srv://vsenthilmurugan:W0b8idwuQJVb1k9R@cluster0.18h8clv.mongodb.net/comic_todo?retryWrites=true&w=majority";
+const uri: string = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.18h8clv.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 
 const client: MongoClient = new MongoClient(uri, {
   serverApi: {

@@ -18,7 +18,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-app.use(express.json());
+app.use(express.json({ limit: '3mb' }));
 
 app.use('/api/todo',toDorouter);
 app.use('/api/user',userrouter);

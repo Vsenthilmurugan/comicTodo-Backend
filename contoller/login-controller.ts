@@ -24,14 +24,13 @@ export const login = async (
   }
   const passwordMatches = await bcrypt.compare(password, existingUser.password);
   if (!passwordMatches) {
-    return next(new HttpError("Invalid Credentials", 422));
+    return res.status(422).json({ message: "Invalid Credentials" });
   }
   let token = jwt.sign({ userId: existingUser._id }, "secretkey", {
     expiresIn: "1d",
   });
   res.status(200).json({
-    message: `welcome ${existingUser.name}`,
-    data: { uid: existingUser._id, token: token },
+    data: { uid: existingUser._id, token: token,theme:existingUser.theme,message:`welcome ${existingUser.name}`},
   });
 };
 
@@ -39,42 +38,41 @@ export const SignUp = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res
+  ) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res
       .status(422)
       .json({ message: "Invalid inputs passed please check your data" });
-  }
-  const { name, email, password } = req.body;
-  try {
-    const hashedPassword = await bcrypt.hash(password, 12);
-    const usersCollection = client.db("comic_todo").collection("users");
-    const newUser = {
-      name,
-      email,
-      password: hashedPassword,
-      theme: "mickey",
-    };
-
-    const existingUser = await usersCollection.findOne({ email });
-    if (existingUser) {
-      return res.status(422).json({
-        message: "Email already in use, please choose a different one",
-      });
     }
-
-    const result = await usersCollection.insertOne(newUser);
-
-    if (!result.acknowledged || result.insertedId === null) {
-      return next(new HttpError("User registration failed", 500));
-    }
-    let token = jwt.sign({ userId: result.insertedId }, "secretkey", {
+    const { name, email, password } = req.body;
+    try {
+      const hashedPassword = await bcrypt.hash(password, 12);
+      const usersCollection = client.db("comic_todo").collection("users");
+      const newUser = {
+        name,
+        email,
+        password: hashedPassword,
+        theme: "mickey",
+      };
+      
+      const existingUser = await usersCollection.findOne({ email });
+      if (existingUser) {
+        return res.status(422).json({
+          message: "Email already in use, please choose a different one",
+        });
+      }
+      
+      const result = await usersCollection.insertOne(newUser);
+      
+      if (!result.acknowledged || result.insertedId === null) {
+        return res.status(500).json({ message: "User registration failed" });
+      }
+      let token = jwt.sign({ userId: result.insertedId }, "secretkey", {
       expiresIn: "1d",
     });
     res.status(201).json({
-      message: "User registered successfully",
-      data: { uid: result.insertedId, token: token },
+      data: { uid: result.insertedId, token: token,theme:'mickey',message: "User registered successfully",},
     });
   } catch (error) {
     return next(new HttpError("Internal server error", 500));

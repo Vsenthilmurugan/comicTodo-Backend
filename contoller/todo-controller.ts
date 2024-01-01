@@ -15,7 +15,7 @@ export const todoList = async (
   const todoStatus = req.params.todoStatus;
   const todoItems = await todoCollection.find({ status: todoStatus }).toArray();
   if (todoItems.length == 0) {
-    return res.status(422).json({ message: "No Item Found", data: todoItems });
+    return res.status(200).json({ message: "No Item Found", data: todoItems });
   }
   res.json({ data: todoItems });
 };
@@ -28,7 +28,7 @@ export const todoItem = async (
     .find({ status: "available" })
     .toArray();
   if (todoItems.length == 0) {
-    return res.status(422).json({ message: "No Item Found", data: todoItems });
+    return res.status(422).json({ message: "No Data Found Please Add To Generate!" });
   }
   const randomIndex = Math.floor(Math.random() * todoItems.length);
   res.status(200).json({ data: todoItems[randomIndex] });

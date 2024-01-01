@@ -4,6 +4,7 @@ import { DataTypes } from "../types/types";
 import { validationResult } from "express-validator";
 import { client } from "../db/mongodb";
 import { ObjectId } from "mongodb";
+import bcrypt from "bcrypt";
 
 const usersCollection = client.db('comic_todo').collection('users');
 
@@ -23,10 +24,11 @@ export const updateUser = async (req: Request, res: Response, next:NextFunction)
     const errorMessage = errorMessages.join(', ');
     throw new HttpError(errorMessage,422);
   }
-  const {name,email,password,theme} = req.body;
+  const {name,email,password,theme,image} = req.body;
   const uid = req.params.uid;
   const objectId = new ObjectId(uid);
   const userDetail = await usersCollection.findOne({ _id:objectId})
+  const hashedPassword = await bcrypt.hash(password, 12);
   if(!userDetail){
     return next(new HttpError('could not find user for the given id',404));
   }
@@ -36,9 +38,11 @@ export const updateUser = async (req: Request, res: Response, next:NextFunction)
   }if(email){
     userData.email = email;
   }if(password){
-    userData.password = password;
+    userData.password = hashedPassword;
   } if(theme){
     userData.theme = theme;
+  }if(image){
+    userData.image = image
   }
   const result = await usersCollection.updateOne({ _id:objectId}, { $set: userData })
   if (result.modifiedCount === 0) {

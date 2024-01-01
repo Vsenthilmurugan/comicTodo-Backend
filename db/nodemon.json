@@ -1,0 +1,7 @@
+{
+    "env":{
+        "DB_USER":"vsenthilmurugan",
+        "DB_PASSWORD":"W0b8idwuQJVb1k9R",
+        "DB_NAME":"comic_todo"
+    }
+}

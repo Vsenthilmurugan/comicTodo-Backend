@@ -19,6 +19,6 @@ toDorouter.patch('/:todoId',[
     body('description').optional().notEmpty().withMessage('description should not be empty')
 ],updateTodoItem);
 
-toDorouter.delete('/removetodo/:todoId',deleteTodoItem);
+toDorouter.delete('/:todoId',deleteTodoItem);
 
 export default toDorouter;
