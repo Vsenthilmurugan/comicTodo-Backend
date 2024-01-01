@@ -8,7 +8,7 @@ import cors from 'cors';
 
 const app = express();
 app.use(cors());
-const port = 'https://comic-todo-backend.vercel.app';
+const port = 5000;
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
